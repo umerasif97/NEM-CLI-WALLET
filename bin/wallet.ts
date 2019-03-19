@@ -1,4 +1,4 @@
-import { MOSAIC_NAME, createSimpleWallet } from "../src";
+import { MOSAIC_NAME, createSimpleWallet, getAccountBalances, mosaicBalance, xemBalance } from "../src";
 import { Password, SimpleWallet, Account } from "nem-library";
 
 //importing prompt package
@@ -98,16 +98,35 @@ const createWallet = () => {
         });
 };
 
+const printBalance = async (account : Account) => {
+    const balances = await getAccountBalances(account);
+    const mosaic = mosaicBalance(balances);
+    const xem = xemBalance(balances);
+    const bal = (mosaic / 1e6).toString();
+    const xemBal = (xem / 1e6).toString();
+    console.log('Coin: '+bal);
+    console.log('Xem: '+xemBal);
+};
+
 const main = async () => {
     if(args[0] === 'wallet'){
         if(args[1] === 'create'){
             createWallet();
         }
+    } else if (args[0] === 'balance') {
+        try{
+            const wallet =  loadWallet();
+            const account = await openWallet(wallet);
+            await printBalance(account);
+        } catch (err) {
+            console.log(err);
+        }
+        
     }
 
-    const wallet = loadWallet();
-	const account = await openWallet(wallet);
-	console.log(account);
+    // const wallet = loadWallet();
+	// const account = await openWallet(wallet);
+	// console.log(account);
 };
 
 main();

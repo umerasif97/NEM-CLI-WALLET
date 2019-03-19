@@ -126,22 +126,51 @@ var createWallet = function () {
         }
     });
 };
+var printBalance = function (account) { return __awaiter(_this, void 0, void 0, function () {
+    var balances, mosaic, xem, bal, xemBal;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, src_1.getAccountBalances(account)];
+            case 1:
+                balances = _a.sent();
+                mosaic = src_1.mosaicBalance(balances);
+                xem = src_1.xemBalance(balances);
+                bal = (mosaic / 1e6).toString();
+                xemBal = (xem / 1e6).toString();
+                console.log('Coin: ' + bal);
+                console.log('Xem: ' + xemBal);
+                return [2 /*return*/];
+        }
+    });
+}); };
 var main = function () { return __awaiter(_this, void 0, void 0, function () {
-    var wallet, account;
+    var wallet, account, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                if (args[0] === 'wallet') {
-                    if (args[1] === 'create') {
-                        createWallet();
-                    }
+                if (!(args[0] === 'wallet')) return [3 /*break*/, 1];
+                if (args[1] === 'create') {
+                    createWallet();
                 }
+                return [3 /*break*/, 6];
+            case 1:
+                if (!(args[0] === 'balance')) return [3 /*break*/, 6];
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 5, , 6]);
                 wallet = loadWallet();
                 return [4 /*yield*/, openWallet(wallet)];
-            case 1:
+            case 3:
                 account = _a.sent();
-                console.log(account);
-                return [2 /*return*/];
+                return [4 /*yield*/, printBalance(account)];
+            case 4:
+                _a.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                err_1 = _a.sent();
+                console.log(err_1);
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/];
         }
     });
 }); };

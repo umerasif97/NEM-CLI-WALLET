@@ -1,6 +1,7 @@
-import { NEMLibrary, NetworkTypes, Password, SimpleWallet, AccountHttp, Address } from 'nem-library';
 
-NEMLibrary.bootstrap(NetworkTypes.MAIN_NET);
+import { AccountHttp, NEMLibrary, NetworkTypes, Password, SimpleWallet, Account, Asset } from 'nem-library';
+
+NEMLibrary.bootstrap(NetworkTypes.TEST_NET);
 
 export const MOSAIC_NAME = 'coin';
 
@@ -10,7 +11,32 @@ export const createSimpleWallet = (password: string): SimpleWallet => {
     return SimpleWallet.create(MOSAIC_NAME+'-wallet', pass);
 };
 
+export const getAccountBalances = (account: Account) : Promise<Array<Asset>> => {
+    return new Promise<Array<Asset>>((resolve, reject) => {
+        const accountHttp = new AccountHttp();
+        accountHttp.getAssetsOwnedByAddress(account.address).subscribe(assets => {
+        resolve(assets);
+    }, err => {
+        reject(err);
+    });
+    });
+};
 
+export const mosaicBalance = (balances: Array<Asset>): number => {
+    const found = balances.find((assets) => {
+        return assets.assetId.name == MOSAIC_NAME;
+    });
+    if(!found) return 0;
+    return found.quantity; 
+};
+
+export const xemBalance = (balances : Array<Asset>): number => {
+    const xemMosaic = balances.find((assets) => {
+        return assets.assetId.name == 'xem';
+    });
+    if(!xemMosaic) return 0;
+    return xemMosaic.quantity;
+}
 
 // const firstWallet = createSimpleWallet('12myfirstwallet24');
 // console.log(firstWallet);
